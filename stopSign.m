@@ -34,11 +34,12 @@ hold off
 %make longest edge 400
 h = size(im,1);
 w = size(im,2);
+%crop the bottom 4th of the image
 if h > w
     im = imresize(im, [400, w/(h/400)]);
     h = size(im,1);
     w = size(im,2);
-    im = imcrop(im,[1 1 w h - (h/4)]);
+    im = imcrop(im,[1 1 w h - (h/4)]);  %the crop
 else
     im = imresize(im, [h/(w/400), 400]);
     h = size(im,1);
@@ -46,8 +47,6 @@ else
     im = imcrop(im,[1 1 w h - (h/4)]);
 end
 
-%remove bottom 3rd of image
-x = imcrop(im,[1 1 w 200]);
 
 figure
 imshow(im);
@@ -61,7 +60,7 @@ hold off
 for i = 1:size(im,1)
     for j = 1:size(im,2)
         if double(im(i,j,1)) / (double(im(i,j,2)) + double(im(i,j,3))) < 1.1 % im(i,j,3) + im(i,j,2) > 450
-            im (i,j,:) = 0;
+            im (i,j,:) = 0; %make the pixel black, if its not red enough
         end
     end
 end
