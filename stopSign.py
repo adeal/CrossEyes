@@ -18,9 +18,9 @@ height, width, channels = inputPhoto.shape
 #print height, width
 
 if height > width:
-	translationFactor = 1200.0 / height
+	translationFactor = 400.0 / height
 else:
-	translationFactor = 1200.0 / width
+	translationFactor = 400.0 / width
 #print translationFactor
 
 #resize the image so the longest edge is 1200 pixels, keeping the same aspect ratio
@@ -64,7 +64,13 @@ for i in range(0, croppedInputPhoto.shape[0]):
 			croppedInputPhoto[i, j] = [0, 0, 0]
 
 
-cv2.imshow('image', croppedInputPhoto)
+biggerYetBlurrierThresholdedImageForViewing = cv2.resize(croppedInputPhoto,None,fx=(1 / translationFactor), fy=(1 / translationFactor), interpolation = cv2.INTER_CUBIC)
+height, width, channels = biggerYetBlurrierThresholdedImageForViewing.shape
+print height, width
+print translationFactor
+print 1 / translationFactor
+cv2.imwrite( "CVOutput/thresholdedImage.jpg", croppedInputPhoto)
+cv2.imshow('image', biggerYetBlurrierThresholdedImageForViewing)
 cv2.waitKey(0)		
 
 
