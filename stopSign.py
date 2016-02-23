@@ -89,10 +89,37 @@ for fn in os.listdir('CVInput'):
 #austin
 #for this part, use the Thresholded_Images
 #%--------------------DETECT BLOBS--------------------%
+<<<<<<< Updated upstream
 # blobMeasurement = cv2.findContours(croppedInputPhoto, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 # numberOfBlobs = len(blobMeasurement)
 # print numberOfBlobs
 
+=======
+gray_img = cv2.cvtColor(croppedInputPhoto, cv2.COLOR_BGR2GRAY)
+cv2.imshow('gray_img', gray_img)
+cv2.waitKey(0)
+
+img, contours, _ = cv2.findContours(gray_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+cv2.imshow('img', img)
+cv2.waitKey(0)
+
+numberOfContours = len(contours)
+area = cv2.contourArea(contours[0], False)
+print area
+
+largestArea = 0
+largestContour = 0
+for i in range(0, numberOfContours):
+    area = cv2.contourArea(contours[i], False)
+    if area > largestArea:
+        largestArea = area
+        largestContour = i
+
+cv2.drawContours(resizedInputPhoto, contours, largestContour, (0,255,0), 3)
+cv2.imshow('contours', resizedInputPhoto)
+
+cv2.waitKey(0)
+>>>>>>> Stashed changes
 
 
 # thresholdedInputPhoto = []
