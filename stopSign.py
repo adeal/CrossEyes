@@ -32,7 +32,7 @@ resizedInputPhoto = cv2.resize(inputPhoto,None,fx=translationFactor, fy=translat
 threeFourthsDown = resizedInputPhoto.shape[0] * (3.0 / 4)
 # print inputPhoto.shape[0]
 # print resizedInputPhoto.shape[0]
-# print threeFourthsDown
+print threeFourthsDown
 croppedInputPhoto = resizedInputPhoto[0:threeFourthsDown, :]
 # cv2.imshow('image', croppedInputPhoto)
 # cv2.waitKey(0)
@@ -71,3 +71,18 @@ cv2.waitKey(0)
 #austin
 #for this part, use the Thresholded_Images
 #%--------------------DETECT BLOBS--------------------%
+blobMeasurement = cv2.findContours(croppedInputPhoto, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+numberOfBlobs = len(blobMeasurement)
+print numberOfBlobs
+
+
+
+# thresholdedInputPhoto = []
+# width, height = thresholdedInputPhoto.shape
+# for i in range(0, width):
+#     for j in range(0, height):
+#         if thresholdedInputPhoto.item(i, j, 2) / thresholdedInputPhoto.item(i, j, 1) + thresholdedInputPhoto.item(i, j, 3) < 1:
+#             thresholdedInputPhoto.itemset((i, j), 0)
+
+# # http://stackoverflow.com/questions/12995937/count-all-values-in-a-matrix-greater-than-a-value
+# thresholdedInputPhoto[np.where(thresholdedInputPhoto > 0)] = 0
