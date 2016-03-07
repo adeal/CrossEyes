@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import grovepi
 
 
 #diego
@@ -92,38 +93,44 @@ for fn in os.listdir('CVInput'):
 # blobMeasurement = cv2.findContours(croppedInputPhoto, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 # numberOfBlobs = len(blobMeasurement)
 # print numberOfBlobs
-gray_img = cv2.cvtColor(croppedInputPhoto, cv2.COLOR_BGR2GRAY)
-cv2.imshow('gray_img', gray_img)
-cv2.waitKey(0)
+		gray_img = cv2.cvtColor(croppedInputPhoto, cv2.COLOR_BGR2GRAY)
+		cv2.imshow('gray_img', gray_img)
+		cv2.waitKey(0)
 
-img, contours, _ = cv2.findContours(gray_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-cv2.imshow('img', img)
-cv2.waitKey(0)
+		img, contours, _ = cv2.findContours(gray_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+		cv2.imshow('img', img)
+		cv2.waitKey(0)
 
-numberOfContours = len(contours)
-area = cv2.contourArea(contours[0], False)
-print area
+		numberOfContours = len(contours)
+		area = cv2.contourArea(contours[0], False)
+		print area
 
-largestArea = 0
-largestContour = 0
-for i in range(0, numberOfContours):
-    area = cv2.contourArea(contours[i], False)
-    if area > largestArea:
-        largestArea = area
-        largestContour = i
+		largestArea = 0
+		largestContour = 0
+		for i in range(0, numberOfContours):
+		    area = cv2.contourArea(contours[i], False)
+		    if area > largestArea:
+		        largestArea = area
+		        largestContour = i
 
-cv2.drawContours(resizedInputPhoto, contours, largestContour, (0,255,0), 3)
-cv2.imshow('contours', resizedInputPhoto)
+		cv2.drawContours(resizedInputPhoto, contours, largestContour, (0,255,0), 3)
+		cv2.imshow('contours', resizedInputPhoto)
 
-cv2.waitKey(0)
+		cv2.waitKey(0)
 
 
-# thresholdedInputPhoto = []
-# width, height = thresholdedInputPhoto.shape
-# for i in range(0, width):
-#     for j in range(0, height):
-#         if thresholdedInputPhoto.item(i, j, 2) / thresholdedInputPhoto.item(i, j, 1) + thresholdedInputPhoto.item(i, j, 3) < 1:
-#             thresholdedInputPhoto.itemset((i, j), 0)
+		# thresholdedInputPhoto = []
+		# width, height = thresholdedInputPhoto.shape
+		# for i in range(0, width):
+		#     for j in range(0, height):
+		#         if thresholdedInputPhoto.item(i, j, 2) / thresholdedInputPhoto.item(i, j, 1) + thresholdedInputPhoto.item(i, j, 3) < 1:
+		#             thresholdedInputPhoto.itemset((i, j), 0)
 
-# # http://stackoverflow.com/questions/12995937/count-all-values-in-a-matrix-greater-than-a-value
-# thresholdedInputPhoto[np.where(thresholdedInputPhoto > 0)] = 0
+		# # http://stackoverflow.com/questions/12995937/count-all-values-in-a-matrix-greater-than-a-value
+		# thresholdedInputPhoto[np.where(thresholdedInputPhoto > 0)] = 0
+
+
+			#%------------TELL PI TO VIBRATE---------------%#
+		if largestArea > 1800:
+			grovepi.digitalWrite(vibration_motor,3)
+
