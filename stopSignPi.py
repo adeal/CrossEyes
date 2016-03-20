@@ -15,8 +15,8 @@ buzzer_motor = 6
 while True:
         camera.capture('input.jpg')
         inputPhoto = cv2.imread('input.jpg')
-        cv2.imshow('image', inputPhoto)
-        cv2.waitKey(10)
+        #cv2.imshow('image', inputPhoto)
+        #cv2.waitKey(10)
 
         
         #%--------------------RESIZE IMAGE--------------------%
@@ -34,8 +34,8 @@ while True:
 
         #resize the image so the longest edge is 1200 pixels, keeping the same aspect ratio
         resizedInputPhoto = cv2.resize(inputPhoto,None,fx=translationFactor, fy=translationFactor, interpolation = cv2.INTER_CUBIC)
-        # cv2.imshow('image', resizedInputPhoto)
-        # cv2.waitKey(0)
+        cv2.imshow('image', resizedInputPhoto)
+        cv2.waitKey(10)
 
         #crop the bottom 4th of the image
         threeFourthsDown = resizedInputPhoto.shape[0] * (3.0 / 4)
@@ -43,8 +43,8 @@ while True:
         # print resizedInputPhoto.shape[0]
         # print threeFourthsDown
         croppedInputPhoto = resizedInputPhoto[0:threeFourthsDown, :]
-        # cv2.imshow('image', croppedInputPhoto)
-        # cv2.waitKey(0)
+        cv2.imshow('image', croppedInputPhoto)
+        cv2.waitKey(10)
 
 
 	#%--------------------THRESHOLD IMAGE--------------------%
@@ -78,9 +78,9 @@ while True:
 	# print height, width
 	# print translationFactor
 	# print 1 / translationFactor
-	cv2.imwrite( "CVOutput/thresholdedImage" + fn, croppedInputPhoto)
-	# cv2.imshow('image', biggerYetBlurrierThresholdedImageForViewing)
-	# cv2.waitKey(0)		
+	#cv2.imwrite( "CVOutput/thresholdedImage" + fn, croppedInputPhoto)
+	cv2.imshow('image', biggerYetBlurrierThresholdedImageForViewing)
+	cv2.waitKey(10)		
 
 
         #austin
@@ -90,8 +90,8 @@ while True:
         # numberOfBlobs = len(blobMeasurement)
         # print numberOfBlobs
 	gray_img = cv2.cvtColor(croppedInputPhoto, cv2.COLOR_BGR2GRAY)
-	# cv2.imshow('gray_img', gray_img)
-	# cv2.waitKey(0)
+	cv2.imshow('gray_img', gray_img)
+	cv2.waitKey(10)
 
 	img, contours, _ = cv2.findContours(gray_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 	# if fn == "stop6.jpg" or fn == "stop7.jpg" or fn == "stop8.jpg":
@@ -117,17 +117,17 @@ while True:
 				        largestArea = area
 				        bestContour = i
 				        
-		print "largestArea in pic "+fn+" is " + str(largestArea)
+		print "largestArea in pic is " + str(largestArea)
 		if bestContour >= 0:
 			cv2.drawContours(resizedInputPhoto, contours, bestContour, (0,255,0), 3)
-			print "found stopsign in image: " + fn
+			print "found stopsign in image"
 			cv2.imshow('contours', resizedInputPhoto)
-			cv2.waitKey(0)
+			cv2.waitKey(10)
 		else:
-			print "found contours, but none that looked like a stopsign in image: " + fn
+			print "found contours, but none that looked like a stopsign in image"
 
 	else:
-		print "No contours found in this image: " + fn
+		print "No contours found in this image"
 
 
 	# thresholdedInputPhoto = []
@@ -148,9 +148,8 @@ while True:
 		grovepi.digitalWrite(vibration_motor,1)
 		#spend 3 seconds making 3 beeps
 		for i in range(1,3):
-                grovepi.digitalWrite(buzzer_motor,1)
-                time.sleep(0.2)
-                grovepi.digitalWrite(buzzer_motor,0)
-                time.sleep(0.2)
-        #end vibration
-        grovepi.digitalWrite(vibration_motor,0)
+                        grovepi.digitalWrite(buzzer_motor,1)
+                        time.sleep(0.5)
+                        grovepi.digitalWrite(buzzer_motor,0)
+                #end vibration
+                grovepi.digitalWrite(vibration_motor,0)

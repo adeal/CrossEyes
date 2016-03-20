@@ -2,7 +2,6 @@
 import numpy as np
 import cv2
 import grovepi
-import picamera
 import time
 
 
@@ -49,10 +48,10 @@ def detectStopSign(croppedInputPhoto):
 			grovepi.digitalWrite(vibration_motor,1)
 			#spend 3 seconds making 3 beeps
 			for i in range(1,3):
-	                grovepi.digitalWrite(buzzer_motor,1)
-	                time.sleep(0.2)
-	                grovepi.digitalWrite(buzzer_motor,0)
-	                time.sleep(0.2)
+                                grovepi.digitalWrite(buzzer_motor,1)
+                                time.sleep(0.2)
+                                grovepi.digitalWrite(buzzer_motor,0)
+                                time.sleep(0.2)
 	        #end vibration
 	        grovepi.digitalWrite(vibration_motor,0)
 	        cv2.drawContours(croppedInputPhoto, contours, bestContour, (0,255,0), 2) #DEBUG
@@ -103,10 +102,10 @@ def detectCrosswalkSign(croppedInputPhoto):
 			grovepi.digitalWrite(vibration_motor,1)
 			#spend 3 seconds making 3 beeps
 			for i in range(1,3):
-	                grovepi.digitalWrite(buzzer_motor,1)
-	                time.sleep(0.2)
-	                grovepi.digitalWrite(buzzer_motor,0)
-	                time.sleep(0.2)
+                                grovepi.digitalWrite(buzzer_motor,1)
+                                time.sleep(0.2)
+                                grovepi.digitalWrite(buzzer_motor,0)
+                                time.sleep(0.2)
 	        #end vibration
 	        grovepi.digitalWrite(vibration_motor,0)
 	        cv2.drawContours(croppedInputPhoto, contours, bestContour, (0,255,0), 2) #DEBUG
@@ -117,46 +116,46 @@ def detectCrosswalkSign(croppedInputPhoto):
 
 
 def detectRoad(croppedInputPhoto):
-	thresholdImage =  cv2.cvtColor(croppedInputPhoto, cv2.COLOR_BGR2GRAY)
-    for i in range(0,len(croppedInputPhoto)-1):
-        for j in range(0,len(croppedInputPhoto[0])-1):
-            if np.var(croppedInputPhoto[i][j]) < PIXEL_VARIANCE_THRESHOLD:
-                thresholdImage[i][j] = 255
-            else:
-                thresholdImage[i][j] = 0
+        thresholdImage =  cv2.cvtColor(croppedInputPhoto, cv2.COLOR_BGR2GRAY)
+        for i in range(0,len(croppedInputPhoto)-1):
+               for j in range(0,len(croppedInputPhoto[0])-1):
+                  if np.var(croppedInputPhoto[i][j]) < PIXEL_VARIANCE_THRESHOLD:
+                     thresholdImage[i][j] = 255
+               else:
+                      thresholdImage[i][j] = 0
 
-    #detect blobs
-    img, contours, _ = cv2.findContours(thresholdImage, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        #detect blobs
+        img, contours, _ = cv2.findContours(thresholdImage, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-    numberOfContours = len(contours)
-    areaThreshold = len(croppedInputPhoto) * len(croppedInputPhoto[0]) * AREA_THRESHOLD_PERCENTAGE
+        numberOfContours = len(contours)
+        areaThreshold = len(croppedInputPhoto) * len(croppedInputPhoto[0]) * AREA_THRESHOLD_PERCENTAGE
 
-    largestArea = 0
-    largestContour = 0
-    for i in range(0, numberOfContours):
-        area = cv2.contourArea(contours[i], False)
+        largestArea = 0
+        largestContour = 0
+        for i in range(0, numberOfContours):
+                area = cv2.contourArea(contours[i], False)
         if area > largestArea:
             largestArea = area
             largestContour = i
-    if numberOfContours > 0: #DEBUG
-        cv2.drawContours(croppedInputPhoto, contours, largestContour, (0,255,0), 2) #DEBUG
-        cv2.imshow('contours', croppedInputPhoto) #DEBUG
-        cv2.waitKey(3000) #DEBUG
+        if numberOfContours > 0: #DEBUG
+                cv2.drawContours(croppedInputPhoto, contours, largestContour, (0,255,0), 2) #DEBUG
+                cv2.imshow('contours', croppedInputPhoto) #DEBUG
+                cv2.waitKey(3000) #DEBUG
 
-    #make decision
+        #make decision
 
-    roadBlobDetected = False
-    if largestArea > areaThreshold:
-        print fn + " = ROAD DETECTED" #DEBUG
-        grovepi.digitalWrite(vibration_motor,1)
-		#spend 3 seconds making 3 beeps
-		for i in range(1,3):
-                grovepi.digitalWrite(buzzer_motor,1)
-                time.sleep(0.2)
-                grovepi.digitalWrite(buzzer_motor,0)
-                time.sleep(0.2)
-        #end vibration
-        grovepi.digitalWrite(vibration_motor,0)
-    else:
-        print fn + " = NO ROAD" #DEBUG
-        #ret false
+        roadBlobDetected = False
+        if largestArea > areaThreshold:
+                print fn + " = ROAD DETECTED" #DEBUG
+                grovepi.digitalWrite(vibration_motor,1)
+                #spend 3 seconds making 3 beeps
+                for i in range(1,3):
+                        grovepi.digitalWrite(buzzer_motor,1)
+                        time.sleep(0.2)
+                        grovepi.digitalWrite(buzzer_motor,0)
+                        time.sleep(0.2)
+                #end vibration
+                grovepi.digitalWrite(vibration_motor,0)
+        else:
+                print fn + " = NO ROAD" #DEBUG
+                #ret false
