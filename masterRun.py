@@ -115,7 +115,7 @@ def detectCrosswalkSign(croppedInputPhoto):
 	        grovepi.digitalWrite(vibration_motor,0)
 	        cv2.drawContours(croppedInputPhoto, contours, bestContour, (0,255,0), 2) #DEBUG
         	cv2.imshow('contours', croppedInputPhoto) #DEBUG
-        	cv2.waitKey(10) #DEBUG
+        	cv2.waitKey(30) #DEBUG
         	print "CROSSWALK SIGN DONE"
 
 
@@ -123,7 +123,7 @@ def detectCrosswalkSign(croppedInputPhoto):
 
 def detectRoad(croppedInputPhoto):
         print "DETECT ROAD START"
-        PIXEL_VARIANCE_THRESHOLD = 10.0
+        PIXEL_VARIANCE_THRESHOLD = 50.0
         AREA_THRESHOLD_PERCENTAGE = 0.6
         thresholdImage =  cv2.cvtColor(croppedInputPhoto, cv2.COLOR_BGR2GRAY)
         for i in range(0,len(croppedInputPhoto)-1):
@@ -146,10 +146,11 @@ def detectRoad(croppedInputPhoto):
         if area > largestArea:
             largestArea = area
             largestContour = i
+            print largestArea
         if numberOfContours > 0: #DEBUG
                 cv2.drawContours(croppedInputPhoto, contours, largestContour, (0,255,0), 2) #DEBUG
                 cv2.imshow('Road Contours', croppedInputPhoto) #DEBUG
-                cv2.waitKey(10) #DEBUG
+                cv2.waitKey(30) #DEBUG
 
         #make decision
 
@@ -200,7 +201,7 @@ while True:
     #resize the image so the longest edge is 1200 pixels, keeping the same aspect ratio
     resizedInputPhoto = cv2.resize(inputPhoto,None,fx=translationFactor, fy=translationFactor, interpolation = cv2.INTER_CUBIC)
     cv2.imshow('image', resizedInputPhoto)
-    cv2.waitKey(10)
+    cv2.waitKey(30)
 
     #crop the bottom 4th of the image
     #threeFourthsDown = resizedInputPhoto.shape[0] * (3.0 / 4)
@@ -238,9 +239,11 @@ while True:
     
     #args = []
     #args.append(resizedInputPhoto)
-    thread.start_new_thread(detectStopSign, (resizedInputPhoto,))
-    thread.start_new_thread(detectCrosswalkSign, (resizedInputPhoto,))
-    thread.start_new_thread(detectRoad, (resizedInputPhoto,))
+    #thread.start_new_thread(detectStopSign, (resizedInputPhoto,))
+    #thread.start_new_thread(detectCrosswalkSign, (resizedInputPhoto,))
+    #thread.start_new_thread(detectRoad, (resizedInputPhoto,))
+
+    print "Beta Presentation Begin! Press the following keys for feature detection algorithms: \n1: Stop Sign\n2: Crosswalk Sign
 
     print "Wait until all detectors are completed. Press key 0 to continue"
     cv2.waitKey(0)
