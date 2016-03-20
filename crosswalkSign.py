@@ -68,7 +68,7 @@ for fn in os.listdir('CrossWalkSignInput'):
 
 				#if pixel is yellow enough, make it white
 				
-				if red > 230 and green > 180 and blue < 15:
+				if red > 230 and green < 100 and blue < 100:
 					croppedInputPhoto[i, j] = [255, 255, 255]
 				else: #else, make it black
 					croppedInputPhoto[i, j] = [0, 0, 0]
@@ -124,7 +124,7 @@ for fn in os.listdir('CrossWalkSignInput'):
 
 			# print "largest area is "
 			# print largestArea
-			if bestContour > 0:
+			if bestContour >= 0:
 				cv2.drawContours(resizedInputPhoto, contours, bestContour, (0,255,0), 3)
 				print "crosswalk sign found on image: " + fn
 				cv2.imshow('contours', resizedInputPhoto)
