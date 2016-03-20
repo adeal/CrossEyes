@@ -68,7 +68,7 @@ for fn in os.listdir('CrossWalkSignInput'):
 
 				#if pixel is yellow enough, make it white
 				
-				if red > 230 and green > 180 and green < 224 and blue < 15:
+				if red > 230 and green > 180 and blue < 15:
 					croppedInputPhoto[i, j] = [255, 255, 255]
 				else: #else, make it black
 					croppedInputPhoto[i, j] = [0, 0, 0]
@@ -80,7 +80,7 @@ for fn in os.listdir('CrossWalkSignInput'):
 		# print translationFactor
 		# print 1 / translationFactor
 		stringWhichPicWeAt = str(whichPicWeAt)
-		cv2.imwrite( "CrossWalkSignOutput/thresholdedImage" + stringWhichPicWeAt + ".jpg", croppedInputPhoto)
+		cv2.imwrite( "CrossWalkSignOutput/thresholdedImage" + fn + ".jpg", croppedInputPhoto)
 	# cv2.imshow('image', biggerYetBlurrierThresholdedImageForViewing)
 	# cv2.waitKey(0)		
 
@@ -100,27 +100,40 @@ for fn in os.listdir('CrossWalkSignInput'):
 		# cv2.waitKey(0)
 
 
-		#don't error if there aren't any contours
 		if len(contours) > 0:
 			numberOfContours = len(contours)
 			area = cv2.contourArea(contours[0], False)
 			# print area
 
 			largestArea = 0
-			largestContour = 0
+			bestContour = -1
+			#go through every contour
 			for i in range(0, numberOfContours):
 			    area = cv2.contourArea(contours[i], False)
-			    if area > largestArea:
-			        largestArea = area
-			        largestContour = i
+			    #make sure the contour is large enough to even bother with
+			    if area > 2000:
+			    	#make sure the contour is square enough
+			    	x,y,w,h = cv2.boundingRect(contours[i])
+			    	# print "w = " + str(w) + "      h = " + str(h)
+			    	# print "float(w) / float(h) is " + str(float(w) / float(h))
+			    	# print "float(h) / float(w) is " + str(float(h) / float(w))
+			    	if float(w) / float(h) > 0.4 and float(w) / float(h) < 1.6 and float(h) / float(w) > 0.4 and float(h) / float(w) < 1.6:
+				    	if area > largestArea:
+					        largestArea = area
+					        bestContour = i
 
-			cv2.drawContours(resizedInputPhoto, contours, largestContour, (0,255,0), 3)
-			cv2.imshow('contours', resizedInputPhoto)
+			# print "largest area is "
+			# print largestArea
+			if bestContour > 0:
+				cv2.drawContours(resizedInputPhoto, contours, bestContour, (0,255,0), 3)
+				print "crosswalk sign found on image: " + fn
+				cv2.imshow('contours', resizedInputPhoto)
+				cv2.waitKey(0)
+			else:
+				print "contours were found on this image, but none of them looked like a crosswalk sign: " + fn
 
-			cv2.waitKey(0)
 		else:
-			print "No contours found in this image"
-			print fn
+			print "No contours found in this image: " + fn
 
 
 		# thresholdedInputPhoto = []
