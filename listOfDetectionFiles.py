@@ -55,6 +55,9 @@ def detectStopSign(croppedInputPhoto):
 	                time.sleep(0.2)
 	        #end vibration
 	        grovepi.digitalWrite(vibration_motor,0)
+	        cv2.drawContours(croppedInputPhoto, contours, bestContour, (0,255,0), 2) #DEBUG
+        	cv2.imshow('contours', croppedInputPhoto) #DEBUG
+        	cv2.waitKey(3000) #DEBUG
 
 
 
@@ -106,6 +109,9 @@ def detectCrosswalkSign(croppedInputPhoto):
 	                time.sleep(0.2)
 	        #end vibration
 	        grovepi.digitalWrite(vibration_motor,0)
+	        cv2.drawContours(croppedInputPhoto, contours, bestContour, (0,255,0), 2) #DEBUG
+        	cv2.imshow('contours', croppedInputPhoto) #DEBUG
+        	cv2.waitKey(3000) #DEBUG
 
 
 
