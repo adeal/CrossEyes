@@ -142,14 +142,15 @@ while True:
 
 
 	# 	#%------------TELL PI TO VIBRATE---------------%#
-	if bestContour >= 0
+	if bestContour >= 0:
 	# if largestArea > 1800:
                 #vibrate entire duration
 		grovepi.digitalWrite(vibration_motor,1)
 		#spend 3 seconds making 3 beeps
-		for i in range(1,3)
-                        grovepi.digitalWrite(buzzer_motor,1)
-                        time.sleep(0.5)
-                        grovepi.digitalWrite(buzzer_motor,0)
-                #end vibration
-                grovepi.digitalWrite(vibration_motor,0)
+		for i in range(1,3):
+                grovepi.digitalWrite(buzzer_motor,1)
+                time.sleep(0.2)
+                grovepi.digitalWrite(buzzer_motor,0)
+                time.sleep(0.2)
+        #end vibration
+        grovepi.digitalWrite(vibration_motor,0)
