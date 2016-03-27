@@ -1,11 +1,14 @@
 import thread
-import picamera
+#import picamera
 import cv2
 import numpy as np
 import time
 import grovepi
 import heapq
+import os
 from time import sleep
+
+
 
 
 
@@ -203,11 +206,12 @@ def detectCrosswalkSign(resizedInputPhoto):
                 #spend 3 seconds making 3 beeps
                 for i in range(1,3):
                         grovepi.digitalWrite(buzzer_motor,1)
-                        time.sleep(0.2)
+                        time.sleep(0.5)
                         grovepi.digitalWrite(buzzer_motor,0)
-                        time.sleep(0.2)
+                        time.sleep(0.5)
         #end vibration
         grovepi.digitalWrite(vibration_motor,0)
+        grovepi.digitalWrite(7,0)
         cv2.drawContours(croppedInputPhoto, contours, bestContour, (0,255,0), 2) #DEBUG
         cv2.imshow('contours', croppedInputPhoto) #DEBUG
         cv2.waitKey(3000) #DEBUG
@@ -271,19 +275,23 @@ def detectRoad(resizedInputPhoto):
 
 #%--------------------READ IMAGE--------------------%
 
-camera = picamera.PiCamera()
+#camera = picamera.PiCamera()
 vibration_motor = 8
 buzzer_motor = 7
 
-camera.preview_fullscreen=False
-camera.preview_window=(320, 320, 640, 480)
-camera.start_preview()
+#camera.preview_fullscreen=False
+#camera.preview_window=(320, 320, 640, 480)
+#camera.start_preview()
 sleep(5)
 
 while True:
     choice = input("Press the following keys for feature detection algorithms: \n1: Stop Sign\n2: Crosswalk Sign\n3: Crosswalk Lines\n4: Road\n5: Traffic Lights")
 
-    camera.capture('input.jpg')
+
+    os.system("sudo ./usbreset /dev/bus/usb/001/" + os.popen("lsusb | grep 'C270' | grep -o 'Device....' | grep -o '...$'").read())
+    os.system("fswebcam input.jpg -r 1280x720")
+        
+    #camera.capture('input.jpg')
     inputPhoto = cv2.imread('input.jpg')
     #cv2.imshow('image', inputPhoto)
     #cv2.waitKey(10)
@@ -301,6 +309,7 @@ while True:
     else:
     	translationFactor = 400.0 / width
     #print translationFactor
+
 
     #resize the image so the longest edge is 1200 pixels, keeping the same aspect ratio
     resizedInputPhoto = cv2.resize(inputPhoto,None,fx=translationFactor, fy=translationFactor, interpolation = cv2.INTER_CUBIC)
@@ -346,9 +355,11 @@ while True:
     #thread.start_new_thread(detectStopSign, (resizedInputPhoto,))
     #thread.start_new_thread(detectCrosswalkSign, (resizedInputPhoto,))
     #thread.start_new_thread(detectRoad, (resizedInputPhoto,))
-
+    
     print "cool choice bro. You picked choice " + str(choice)
-
+    grovepi.digitalWrite(7,0)
+    grovepi.digitalWrite(8,0)
+    
     if choice == 1:
         detectStopSign(resizedInputPhoto)
     elif choice == 2:
@@ -358,7 +369,4 @@ while True:
         print "waiting"
     elif choice == 4:
         detectRoad(resizedInputPhoto)
-
-
-
-
+    
