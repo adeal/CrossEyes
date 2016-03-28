@@ -34,14 +34,14 @@ class streamMedian:
             return -1 * self.maxHeap[0]
 
 # while True:
-for fn in os.listdir('crosseyesPicLog'):
+for fn in os.listdir('linesOnly'):
     if fn[-4:] == '.jpg' or fn[-4:] == '.JPG':
         print "\nProcessing new image..."
         print "image name is " + fn
-        inputPhoto = cv2.imread('crosseyesPicLog/' + fn)
+        inputPhoto = cv2.imread('linesOnly/' + fn)
         cv2.imshow('Input Photo', inputPhoto)
-        #cv2.moveWindow('Input Photo', 0, 0)
-        cv2.waitKey(30)
+        cv2.moveWindow('Input Photo', 0, 0)
+        cv2.waitKey(0)
 
         cv2.destroyWindow('Input Photo')
 
@@ -64,16 +64,16 @@ for fn in os.listdir('crosseyesPicLog'):
         # print threeFourthsDown
         # croppedInputPhoto = resizedInputPhoto[height / 4:height, :]
         cv2.imshow('Cropped Image', resizedInputPhoto)
-        #cv2.moveWindow('Cropped Image', 0, 0)
-        cv2.waitKey(30)
+        cv2.moveWindow('Cropped Image', 0, 0)
+        cv2.waitKey(0)
 
         gray_img = cv2.cvtColor(resizedInputPhoto, cv2.COLOR_BGR2GRAY)
         # cv2.imshow('gray', gray)
         # cv2.waitKey(0)
         ret, gray_img = cv2.threshold(gray_img, 165, 255, cv2.THRESH_BINARY)
         cv2.imshow('Thresholded Image', gray_img)
-        #cv2.moveWindow('Thresholded Image', 0, 0)
-        cv2.waitKey(30)
+        cv2.moveWindow('Thresholded Image', 0, 0)
+        cv2.waitKey(0)
         # gray2 = gray.copy()
         # mask = np.zeros(gray.shape,np.uint8)
 
@@ -84,35 +84,25 @@ for fn in os.listdir('crosseyesPicLog'):
         numContours = len(contours)
         possibleLines = {}
         midptMedian = streamMedian()
-        #allContoursImage = resizedInputPhoto
         if numContours > 0:
             for i in range(0, numContours):
                 area = cv2.contourArea(contours[i], False)
                 # print "area of this contour is " + str(area)
                 # make sure the contour is large enough to even bother with
-                #cv2.drawContours(allContoursImage, contours, i, (0,255,0), 3)
                 if area > 100:
                     x, y, w, h = cv2.boundingRect(contours[i])
-                    if w > 3*h:
-                        midPt = (x + x + w) / 2
-                        # cv2.line(croppedInputPhoto, (midPt, 0), (midPt, height), (0,255,0), 1)
+                    midPt = (x + x + w) / 2
+                    # cv2.line(croppedInputPhoto, (midPt, 0), (midPt, height), (0,255,0), 1)
 
-                        midptMedian.insert(midPt)
-                        possibleLines[i] = [x, y, w, h]
-                        #print "this area is " + str(area)
-                        #cv2.drawContours(gray_img, contours, i, (0,255,0), 3)
-                        #cv2.imshow('contours', gray_img)
-                        #cv2.waitKey(30)
-        
-        #cv2.imshow("All Contours", allContoursImage)
-        #cv2.waitKey(30)
+                    midptMedian.insert(midPt)
+                    possibleLines[i] = [x, y, w, h]
+                    print "this area is " + str(area)
+                    cv2.drawContours(gray_img, contours, i, (0,255,0), 3)
+                    cv2.imshow('contours', gray_img)
+                    cv2.waitKey(0)
+
         crossLineContourIndexes = []
-        try:
-            median = midptMedian.getMedian()
-        except:
-            print "NO CROSSWALK FOUND"
-            cv2.waitKey(0)
-            continue
+        median = midptMedian.getMedian()
         # print "ok, done. median is: ", median
         for key, val in possibleLines.iteritems():
             x = val[0]
@@ -129,6 +119,6 @@ for fn in os.listdir('crosseyesPicLog'):
                 cv2.drawContours(resizedInputPhoto, contours, contour, (0, 255, 0), 3)
 
         cv2.imshow('FINAL IMAGE', resizedInputPhoto)
-        #cv2.moveWindow('FINAL IMAGE', 0, 0)
+        cv2.moveWindow('FINAL IMAGE', 0, 0)
         cv2.waitKey(0)
         cv2.destroyAllWindows()

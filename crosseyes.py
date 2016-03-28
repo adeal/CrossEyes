@@ -79,18 +79,22 @@ def detectCrosswalkLines(resizedInputPhoto):
             # make sure the contour is large enough to even bother with
             if area > 100:
                 x, y, w, h = cv2.boundingRect(contours[i])
-                midPt = (x + x + w) / 2
-                # cv2.line(croppedInputPhoto, (midPt, 0), (midPt, height), (0,255,0), 1)
+                if w > 3*h:
+                    midPt = (x + x + w) / 2
+                    # cv2.line(croppedInputPhoto, (midPt, 0), (midPt, height), (0,255,0), 1)
 
-                midptMedian.insert(midPt)
-                possibleLines[i] = [x, y, w, h]
+                    midptMedian.insert(midPt)
+                    possibleLines[i] = [x, y, w, h]
 
-                # cv2.drawContours(croppedInputPhoto, contours, i, (0,255,0), 3)
-                # cv2.imshow('contours', croppedInputPhoto)
-                # cv2.waitKey(0)
+                    # cv2.drawContours(croppedInputPhoto, contours, i, (0,255,0), 3)
+                    # cv2.imshow('contours', croppedInputPhoto)
+                    # cv2.waitKey(0)
 
     crossLineContourIndexes = []
-    median = midptMedian.getMedian()
+    try: 
+        median = midptMedian.getMedian()
+    except:
+        return
     # print "ok, done. median is: ", median
     for key, val in possibleLines.iteritems():
         x = val[0]
