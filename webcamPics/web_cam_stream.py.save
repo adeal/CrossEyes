@@ -1,0 +1,23 @@
+import pygame
+import pygame.camera
+import sys
+
+pygame.init()
+pygame.camera.init()
+
+
+
+screen = pygame.display.set_mode((640,480),0)
+
+cam_list = pygame.camera.list_cameras()
+
+webcam = pygame.camera.Camera(cam_list[0],(32,24))
+webcam.start()
+
+while true:
+	os.system("sudo ./usbreset /dev/bus/usb/001/" + os.popen("lsusb | grep 'C270' | grep -o 'Device....' | grep -o '...$'").read())
+	imagen = webcam.get_image()
+	imagen = pygame.transform.scale(imagen, (640,480))
+	scale.blit(imagen,(0,0))
+	pygame.display.update()
+	

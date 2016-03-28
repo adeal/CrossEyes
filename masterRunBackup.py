@@ -151,9 +151,9 @@ def detectStopSign(resizedInputPhoto):
 			#spend 3 seconds making 3 beeps
 			for i in range(1,3):
                                 grovepi.digitalWrite(buzzer_motor,1)
-                                time.sleep(0.5)
+                                time.sleep(0.2)
                                 grovepi.digitalWrite(buzzer_motor,0)
-                                time.sleep(0.5)
+                                time.sleep(0.2)
 	        #end vibration
 	        grovepi.digitalWrite(vibration_motor,0)
 	        cv2.drawContours(croppedInputPhoto, contours, bestContour, (0,255,0), 2) #DEBUG
@@ -184,7 +184,7 @@ def detectCrosswalkSign(resizedInputPhoto):
 				green = 1
 			if red == 0.0:
 				red = 1			
-			if red < 210 and red > 100 and green < 210 and green > 90 and blue < 100:
+			if red > 180 and green < 230 and green > 140 and blue < 50:
 				croppedInputPhoto[i, j] = [255, 255, 255]
 				#print "making this pixel white"
 			else: #else, make it black
@@ -234,7 +234,7 @@ def detectCrosswalkSign(resizedInputPhoto):
 def detectRoad(resizedInputPhoto):
     print "DETECT ROAD START"
     croppedInputPhoto = resizedInputPhoto[len(resizedInputPhoto)/2:len(resizedInputPhoto), :]
-    #croppedInputPhoto = croppedInputPhoto[0:len(croppedInputPhoto)/2, :]
+    croppedInputPhoto = croppedInputPhoto[0:len(croppedInputPhoto)/2, :]
 
     PIXEL_VARIANCE_THRESHOLD = 30.0
     AREA_THRESHOLD_PERCENTAGE = 0.5
@@ -245,9 +245,7 @@ def detectRoad(resizedInputPhoto):
                  thresholdImage[i][j] = 255
               else:
                   thresholdImage[i][j] = 0
-    cv2.imshow('threshold image', thresholdImage)
-    cv2.waitKey(3000)
-    
+
     #detect blobs
     img, contours, _ = cv2.findContours(thresholdImage, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -257,11 +255,10 @@ def detectRoad(resizedInputPhoto):
     largestArea = 0
     largestContour = 0
     for i in range(0, numberOfContours):
-        area = cv2.contourArea(contours[i], False)
-        print area
-        if area > largestArea:
-            largestArea = area
-            largestContour = i
+            area = cv2.contourArea(contours[i], False)
+    if area > largestArea:
+        largestArea = area
+        largestContour = i
     if numberOfContours > 0: #DEBUG
             cv2.drawContours(croppedInputPhoto, contours, largestContour, (0,255,0), 2) #DEBUG
             cv2.imshow('Road Contours', croppedInputPhoto) #DEBUG
@@ -299,26 +296,14 @@ buzzer_motor = 7
 sleep(5)
 
 while True:
-
-    choice = 'n'
-    while str(choice) != 'y':
-        os.system("sudo ./usbreset /dev/bus/usb/001/" + os.popen("lsusb | grep 'C270' | grep -o 'Device....' | grep -o '...$'").read())
-        os.system("fswebcam input.jpg -r 1280x720")
-        inputPhoto = cv2.imread('input.jpg')
-        cv2.imshow('image', inputPhoto)
-        cv2.waitKey(100)
-        choice = raw_input("Take a Photo and press Y to continue and N to take another\n")
-    
-    choice = input("Press the following keys for feature detection algorithms: \n1: Stop Sign\n2: Crosswalk Sign\n3: Crosswalk Lines\n4: Road\n")
+    choice = input("Press the following keys for feature detection algorithms: \n1: Stop Sign\n2: Crosswalk Sign\n3: Crosswalk Lines\n4: Road\n5: Traffic Lights")
 
 
-    #os.system("sudo ./usbreset /dev/bus/usb/001/" + os.popen("lsusb | grep 'C270' | grep -o 'Device....' | grep -o '...$'").read())
-    #os.system("fswebcam input.jpg -r 1280x720")
+    os.system("sudo ./usbreset /dev/bus/usb/001/" + os.popen("lsusb | grep 'C270' | grep -o 'Device....' | grep -o '...$'").read())
+    os.system("fswebcam input.jpg -r 1280x720")
         
     #camera.capture('input.jpg')
-
-    #inputPhoto = cv2.imread('input.jpg')
-
+    inputPhoto = cv2.imread('input.jpg')
     #cv2.imshow('image', inputPhoto)
     #cv2.waitKey(10)
 

@@ -1,4 +1,4 @@
-import thread
+from threading import Thread
 #import picamera
 import cv2
 import numpy as np
@@ -43,6 +43,7 @@ class streamMedian:
 
 
 def detectCrosswalkLines(resizedInputPhoto):
+    print "Detect crosswalk lines start"
     croppedInputPhoto = resizedInputPhoto[height / 2:height, :]
     gray_img = cv2.cvtColor(croppedInputPhoto, cv2.COLOR_BGR2GRAY)
     ret, gray_img = cv2.threshold(gray_img, 150, 255, cv2.THRESH_BINARY)
@@ -75,13 +76,18 @@ def detectCrosswalkLines(resizedInputPhoto):
     if len(crossLineContourIndexes) > 3:
         global triggerFound
         triggerFound = True
-
+        print "Crosswalk lines found"
+        for contour in crossLineContourIndexes:
+            cv2.drawContours(croppedInputPhoto, contours, contour, (0,255,0), 3)
+    cv2.imshow('crosswalk lines contours', croppedInputPhoto)
+    cv2.waitKey(30)
 
 
 
 
 #functions
 def detectStopSign(resizedInputPhoto):
+        print "Stop sign start"
 	#%--------------------THRESHOLD IMAGE--------------------%
         threeFourthsDown = resizedInputPhoto.shape[0] * (3.0 / 4)
         croppedInputPhoto = resizedInputPhoto[0:threeFourthsDown, :]
@@ -112,7 +118,7 @@ def detectStopSign(resizedInputPhoto):
 		bestContour = -1
 		for i in range(0, numberOfContours):
 		    area = cv2.contourArea(contours[i], False)
-		    if area > 700:
+		    if area > 700/3:
 		    	x,y,w,h = cv2.boundingRect(contours[i])
 		    	if float(w) / float(h) > 0.8 and float(w) / float(h) < 1.2 and float(h) / float(w) > 0.8 and float(h) / float(w) < 1.2:
 			    	if area > largestArea:
@@ -120,12 +126,17 @@ def detectStopSign(resizedInputPhoto):
 				        bestContour = i
 
 		if bestContour >= 0:
-			global triggerFound
-            triggerFound = True
+		    global triggerFound
+                    triggerFound = True
+                    print "Stop sign found"
+                    cv2.drawContours(croppedInputPhoto, contours, bestContour, (0,255,0), 2) #DEBUG
+        cv2.imshow('stop sign contours', croppedInputPhoto) #DEBUG
+        cv2.waitKey(30) #DEBUG
 
 
 
 def detectCrosswalkSign(resizedInputPhoto):
+    print "Detect crosswalk sign start"
     threeFourthsDown = resizedInputPhoto.shape[0] * (3.0 / 4)
     croppedInputPhoto = resizedInputPhoto[0:threeFourthsDown, :]
     for i in range(0, croppedInputPhoto.shape[0]):
@@ -169,11 +180,14 @@ def detectCrosswalkSign(resizedInputPhoto):
         if bestContour >= 0:
             global triggerFound
             triggerFound = True
-
-
+            print "Crosswalk lines found"
+            cv2.drawContours(croppedInputPhoto, contours, bestContour, (0,255,0), 2) #DEBUG
+    cv2.imshow('crosswalk sign contours', croppedInputPhoto) #DEBUG
+    cv2.waitKey(30) #DEBUG
 
 
 def detectRoad(resizedInputPhoto):
+    print "Detect road start"
     croppedInputPhoto = resizedInputPhoto[len(resizedInputPhoto)/2:len(resizedInputPhoto), :]
     croppedInputPhoto = croppedInputPhoto[0:len(croppedInputPhoto)/2, :]
 
@@ -205,6 +219,9 @@ def detectRoad(resizedInputPhoto):
     if largestArea > areaThreshold:
             global triggerFound
             triggerFound = True
+            print "Detect road found"
+    cv2.imshow('Road Contours', croppedInputPhoto) #DEBUG
+    cv2.waitKey(30) #DEBUG
 
 
 #%--------------------READ IMAGE--------------------%
@@ -219,9 +236,10 @@ buzzer_motor = 7
 # sleep(5)
 
 while True:
-    choice = input("Press the following keys for feature detection algorithms: \n1: Stop Sign\n2: Crosswalk Sign\n3: Crosswalk Lines\n4: Road\n5: Traffic Lights")
+    #choice = input("Press the following keys for feature detection algorithms: \n1: Stop Sign\n2: Crosswalk Sign\n3: Crosswalk Lines\n4: Road\n5: Traffic Lights")
 
     #reset USB ports
+    
     os.system("sudo ./usbreset /dev/bus/usb/001/" + os.popen("lsusb | grep 'C270' | grep -o 'Device....' | grep -o '...$'").read())
     os.system("fswebcam input.jpg -r 1280x720")        
     inputPhoto = cv2.imread('input.jpg')
@@ -235,35 +253,42 @@ while True:
     #print height, width
 
     if height > width:
-    	translationFactor = 400.0 / height
+    	translationFactor = 100.0 / height
     else:
-    	translationFactor = 400.0 / width
+    	translationFactor = 100.0 / width
     #print translationFactor
 
 
     #resize the image so the longest edge is 1200 pixels, keeping the same aspect ratio
     resizedInputPhoto = cv2.resize(inputPhoto,None,fx=translationFactor, fy=translationFactor, interpolation = cv2.INTER_CUBIC)
-
+    print "start parallel"
 
     #%--------------CALL THE PROCESSES IN PARALLEL-----------------%
     #declare thread objects
-    stopSignThread = detectStopSign(resizedInputPhoto)
-    crosswalkSignThread = detectCrosswalkSign(resizedInputPhoto)
-    detectRoadThread = detectRoad(resizedInputPhoto)
-    crossWalkLineThread = detectCrosswalkLines(resizedInputPhoto)
+
+    #thread.start_new_thread(detectStopSign, {resizedInputPhoto})
+    #thread.start_new_thread(detectCrosswalkSign, (resizedInputPhoto))
+    #thread.start_new_thread(detectRoad, (resizedInputPhoto))
+    #crossWalkLineThread = detectCrosswalkLines(resizedInputPhoto)
+
+    
+    stopSignThread = Thread(target = detectStopSign, args = (resizedInputPhoto,) )
+    crosswalkSignThread = Thread(target = detectCrosswalkSign, args = (resizedInputPhoto,) )
+    detectRoadThread = Thread(target = detectRoad, args = (resizedInputPhoto,) )
+    
 
     #start all threads
     stopSignThread.start()
     crosswalkSignThread.start()
     detectRoadThread.start()
-    crossWalkLineThread.start()
+    #crossWalkLineThread.start()
 
     #keep track of threads w list
     threads = []
     threads.append(stopSignThread)
     threads.append(crosswalkSignThread)
     threads.append(detectRoadThread)
-    threads.append(crossWalkLineThread)
+    #threads.append(crossWalkLineThread)
 
     #wait for all to complete
     for t in threads:
@@ -287,5 +312,7 @@ while True:
         grovepi.digitalWrite(vibration_motor,0)
     else:
         print "NOTHING FOUND"
+
+    cv2.waitKey(0)
 
     
