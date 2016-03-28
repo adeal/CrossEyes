@@ -1,0 +1,31 @@
+startup script contained in /lib/systemd/system/crosseyes.service
+commands:
+open up service unit script:
+$ sudo nano /lib/systemd/system/crosseyes.service
+enable output of file to go into log file:
+$ sudo chmod 644 /lib/systemd/system/crosseyes.service
+refresh list of services:
+$ sudo systemctl daemon-reload
+enable the crosseyes service on boot:
+$ sudo systemctl enable crosseyes.service
+reboot:
+$ sudo reboot
+check status:
+$ sudo systemctl status crosseyes.service
+stop service:
+sudo service crosseyes stop
+
+sudo systemctl daemon-reload
+pi@raspberrypi:~ $ sudo systemctl enable crosseyes.service
+
+
+[Unit]
+Description = CrossEyes Service
+After=multi-user.target
+
+[Service]
+Type = idle
+ExecStart=/home/pi/CrossEyes/crosseyes.py > /home/pi/CrossEyes/log 2>&
+
+[Install]
+WantedBy=multi-user.target
