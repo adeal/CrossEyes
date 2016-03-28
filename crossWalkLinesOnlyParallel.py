@@ -1,4 +1,4 @@
-import thread
+from threading import Thread
 import cv2
 import numpy as np
 import time
@@ -89,7 +89,7 @@ def sendAlertSignal():
     grovepi.digitalWrite(vibration_motor,0)
 
 #Code Start
-alertThread = Thread(target = sendAlertSignal, args = (,))
+alertThread = Thread(target = sendAlertSignal, args = ())
 #%--------------------READ IMAGE--------------------%
 # while True:
 #     choice = input("Press the following keys for feature detection algorithms: \n1: Stop Sign\n2: Crosswalk Sign\n3: Crosswalk Lines\n4: Road\n5: Traffic Lights")
