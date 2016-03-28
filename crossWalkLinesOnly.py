@@ -120,8 +120,8 @@ def detectStopSign(resizedInputPhoto):
 				        bestContour = i
 
 		if bestContour >= 0:
-			global triggerFound
-            triggerFound = True
+		    global triggerFound
+                    triggerFound = True
 
 
 
