@@ -110,7 +110,7 @@ def detectStopSign(resizedInputPhoto):
 				blue = 1
 			if green == 0.0:
 				green = 1
-			if red > 50 and green < 70 and blue < 70:
+			if red > 80 and green < 90 and blue < 100:
 				croppedInputPhoto[i, j] = [255, 255, 255]
 			else: #else, make it black
 				croppedInputPhoto[i, j] = [0, 0, 0]
@@ -173,7 +173,7 @@ def detectCrosswalkSign(resizedInputPhoto):
 				green = 1
 			if red == 0.0:
 				red = 1			
-			if red > 180 and green < 230 and green > 140 and blue < 50:
+			if red < 210 and red > 100 and green < 210 and green > 90 and blue < 100:
 				croppedInputPhoto[i, j] = [255, 255, 255]
 				#print "making this pixel white"
 			else: #else, make it black

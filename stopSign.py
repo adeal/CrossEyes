@@ -110,14 +110,14 @@ for fn in os.listdir('CVInput'):
 			    if area > 700:
 			    	#make sure the contour is square enough
 			    	x,y,w,h = cv2.boundingRect(contours[i])
-			    	print float(w) / float(h)
-			    	print float(h) / float(w)
+			    	# print float(w) / float(h)
+			    	# print float(h) / float(w)
 			    	if float(w) / float(h) > 0.8 and float(w) / float(h) < 1.2 and float(h) / float(w) > 0.8 and float(h) / float(w) < 1.2:
 				    	if area > largestArea:
 					        largestArea = area
 					        bestContour = i
 
-			print "largestArea in pic "+fn+" is " + str(largestArea)
+			#print "largestArea in pic "+fn+" is " + str(largestArea)
 			if bestContour >= 0:
 				cv2.drawContours(resizedInputPhoto, contours, bestContour, (0,255,0), 3)
 				print "found stopsign in image: " + fn

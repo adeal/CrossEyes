@@ -68,7 +68,7 @@ for fn in os.listdir('CrossWalkSignInput'):
 
 				#if pixel is yellow enough, make it white
 				
-				if red > 230 and green < 100 and blue < 100:
+				if red > 230 and green > 180 and blue < 100:
 					croppedInputPhoto[i, j] = [255, 255, 255]
 				else: #else, make it black
 					croppedInputPhoto[i, j] = [0, 0, 0]
