@@ -218,14 +218,16 @@ buzzer_motor = 7
 #camera.start_preview()
 # sleep(5)
 
-while True:
-    choice = input("Press the following keys for feature detection algorithms: \n1: Stop Sign\n2: Crosswalk Sign\n3: Crosswalk Lines\n4: Road\n5: Traffic Lights")
+# while True:
+#     choice = input("Press the following keys for feature detection algorithms: \n1: Stop Sign\n2: Crosswalk Sign\n3: Crosswalk Lines\n4: Road\n5: Traffic Lights")
 
-    #reset USB ports
-    os.system("sudo ./usbreset /dev/bus/usb/001/" + os.popen("lsusb | grep 'C270' | grep -o 'Device....' | grep -o '...$'").read())
-    os.system("fswebcam input.jpg -r 1280x720")        
-    inputPhoto = cv2.imread('input.jpg')
-
+#     #reset USB ports
+#     os.system("sudo ./usbreset /dev/bus/usb/001/" + os.popen("lsusb | grep 'C270' | grep -o 'Device....' | grep -o '...$'").read())
+#     os.system("fswebcam input.jpg -r 1280x720")        
+#     inputPhoto = cv2.imread('input.jpg')
+for fn in os.listdir('linesOnly'):
+    if fn[-4:] == '.jpg':
+        inputPhoto = cv2.imread('linesOnly/' + fn)
     
     #%--------------------RESIZE IMAGE--------------------%
     #make longest edge 400
