@@ -98,7 +98,7 @@ def detectCrosswalkLines(resizedInputPhoto):
 
         midPt = (x + x + w) / 2
         # print "MIDPT for {} is {}".format(key, midPt)
-        if ((median - 40) <= midPt <= (median + 40)):
+        if ((median - (imageEdge) / 10) <= midPt <= (median + (imageEdge / 10))):
             crossLineContourIndexes.append(key)
 
     if len(crossLineContourIndexes) >= 3:
