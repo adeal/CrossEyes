@@ -1,1 +1,10 @@
 cv/
+CrosswalkLinesInput/
+CrossWalkSignInput/
+CrossWalkSignOutput/
+images/
+linesOnly/
+RoadInput/
+StopSignInput/
+StopSignOutput/
+webcamPics/
