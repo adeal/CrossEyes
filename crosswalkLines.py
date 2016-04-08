@@ -96,10 +96,10 @@ for fn in os.listdir('linesOnly'):
 
                     midptMedian.insert(midPt)
                     possibleLines[i] = [x, y, w, h]
-
-                    # cv2.drawContours(croppedInputPhoto, contours, i, (0,255,0), 3)
-                    # cv2.imshow('contours', croppedInputPhoto)
-                    # cv2.waitKey(0)
+                    print "this area is " + str(area)
+                    cv2.drawContours(gray_img, contours, i, (0,255,0), 3)
+                    cv2.imshow('contours', gray_img)
+                    cv2.waitKey(0)
 
         crossLineContourIndexes = []
         median = midptMedian.getMedian()
