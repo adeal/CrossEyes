@@ -40,7 +40,8 @@ def detectStopSign(resizedInputPhoto):
     gray_img = cv2.cvtColor(resizedInputPhoto, cv2.COLOR_BGR2GRAY)
 
     img, contours, _ = cv2.findContours(gray_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    
+    cv2.imshow('thresholded stop image', resizedInputPhoto)
+    cv2.waitKey(30)
     if len(contours) > 0:
         numberOfContours = len(contours)
         largestArea = 0
@@ -50,7 +51,7 @@ def detectStopSign(resizedInputPhoto):
             #cv2.drawContours(allContours, contours, i, (0,255,0), 2)
             area = cv2.contourArea(contours[i], False)
             if area > 700/(translationFactorAmount/400): #original error measured w.r.t. 400
-                print "found stop contour bigger than 700"
+                #print "found stop contour bigger than 700"
                 x,y,w,h = cv2.boundingRect(contours[i])
                 #print float(w) / float(h)
                 #print float(h) / float(w)
@@ -59,8 +60,7 @@ def detectStopSign(resizedInputPhoto):
                         largestArea = area
                         bestContour = i
 
-        cv2.imshow('thresholded stop image', resizedInputPhoto)
-        cv2.waitKey(30)
+        
         if bestContour >= 0:
             #print "STOP SIGN DETECTED"
             cv2.drawContours(resizedInputPhoto, contours, bestContour, (0,255,0), 2)
@@ -69,11 +69,17 @@ def detectStopSign(resizedInputPhoto):
             return True
         else:
             #print "NO STOP SIGN FOUND"
+            noPhoto = cv2.imread('noStop.jpg')
+            cv2.imshow('final stop contour', noPhoto)
+            cv2.waitKey(30)
             return False
             #cv2.drawContours(croppedInputPhoto, contours, bestContour, (0,255,0), 2) #DEBUG
             #cv2.imshow('contours', croppedInputPhoto) #DEBUG
             #cv2.waitKey(3000) #DEBUG
         #print "STOP SIGN DONE"
+    noPhoto = cv2.imread('noStop.jpg')
+    cv2.imshow('final stop contour', noPhoto)
+    cv2.waitKey(30)
     return False
 
 
@@ -118,7 +124,7 @@ def detectCrosswalkSign(resizedInputPhoto):
         for i in range(0, numberOfContours):
             area = cv2.contourArea(contours[i], False)
             if area > 2000/(translationFactorAmount/400): #original area measured w.r.t. 400
-                print "found cross contour bigger than 2000"
+                #print "found cross contour bigger than 2000"
                 x,y,w,h = cv2.boundingRect(contours[i])
                 if float(w) / float(h) > 0.4 and float(w) / float(h) < 1.6 and float(h) / float(w) > 0.4 and float(h) / float(w) < 1.6:
                     if area > largestArea:
@@ -134,6 +140,9 @@ def detectCrosswalkSign(resizedInputPhoto):
 
             return True
         else:
+            noPhoto = cv2.imread('noCross.jpg')
+            cv2.imshow('final cross contour', noPhoto)
+            cv2.waitKey(30)
             #print "NO CROSSWALK SIGN FOUND"
             return False
         #end vibration
@@ -142,6 +151,9 @@ def detectCrosswalkSign(resizedInputPhoto):
         #cv2.drawContours(croppedInputPhoto, contours, bestContour, (0,255,0), 2) #DEBUG
         #cv2.imshow('contours', croppedInputPhoto) #DEBUG
         #cv2.waitKey(3000) #DEBUG
+    noPhoto = cv2.imread('noCross.jpg')
+    cv2.imshow('final cross contour', noPhoto)
+    cv2.waitKey(30)
     return False
 
 
